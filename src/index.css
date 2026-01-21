@@ -107,11 +107,21 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
   html {
     direction: rtl;
+  }
+
+  /* Fix timeline responsiveness */
+  @media (max-width: 640px) {
+    .prayer-node-circle {
+      @apply w-10 h-10;
+    }
+    .prayer-node-circle svg {
+      @apply w-4 h-4;
+    }
   }
 }
 

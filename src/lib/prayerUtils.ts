@@ -6,6 +6,7 @@ export interface PrayerInfo {
   key: PrayerName;
   nameAr: string;
   time: string;
+  time12: string; // 12-hour format
   isPrayer: boolean; // false for sunrise (informational only)
 }
 
@@ -17,6 +18,14 @@ export const prayerNames: Record<PrayerName, string> = {
   maghrib: "المغرب",
   isha: "العشاء",
 };
+
+// Convert 24-hour time to 12-hour format with Arabic AM/PM
+export function to12HourFormat(time24: string): string {
+  const [hours, minutes] = time24.split(":").map(Number);
+  const period = hours < 12 ? "صـ" : "مـ";
+  const hours12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+  return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
+}
 
 // Get day of year (1-365)
 export function getDayOfYear(date: Date): number {
@@ -52,12 +61,12 @@ export function timeStringToDate(timeStr: string, baseDate: Date = new Date()): 
 // Get all prayers for a day as an array
 export function getPrayersArray(dayTimes: DayPrayerTimes): PrayerInfo[] {
   return [
-    { key: "fajr", nameAr: prayerNames.fajr, time: dayTimes.fajr, isPrayer: true },
-    { key: "sunrise", nameAr: prayerNames.sunrise, time: dayTimes.sunrise, isPrayer: false },
-    { key: "dhuhr", nameAr: prayerNames.dhuhr, time: dayTimes.dhuhr, isPrayer: true },
-    { key: "asr", nameAr: prayerNames.asr, time: dayTimes.asr, isPrayer: true },
-    { key: "maghrib", nameAr: prayerNames.maghrib, time: dayTimes.maghrib, isPrayer: true },
-    { key: "isha", nameAr: prayerNames.isha, time: dayTimes.isha, isPrayer: true },
+    { key: "fajr", nameAr: prayerNames.fajr, time: dayTimes.fajr, time12: to12HourFormat(dayTimes.fajr), isPrayer: true },
+    { key: "sunrise", nameAr: prayerNames.sunrise, time: dayTimes.sunrise, time12: to12HourFormat(dayTimes.sunrise), isPrayer: false },
+    { key: "dhuhr", nameAr: prayerNames.dhuhr, time: dayTimes.dhuhr, time12: to12HourFormat(dayTimes.dhuhr), isPrayer: true },
+    { key: "asr", nameAr: prayerNames.asr, time: dayTimes.asr, time12: to12HourFormat(dayTimes.asr), isPrayer: true },
+    { key: "maghrib", nameAr: prayerNames.maghrib, time: dayTimes.maghrib, time12: to12HourFormat(dayTimes.maghrib), isPrayer: true },
+    { key: "isha", nameAr: prayerNames.isha, time: dayTimes.isha, time12: to12HourFormat(dayTimes.isha), isPrayer: true },
   ];
 }
 
