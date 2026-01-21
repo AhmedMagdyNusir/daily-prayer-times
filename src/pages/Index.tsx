@@ -50,7 +50,7 @@ const Index = () => {
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-auto pt-4 border-t border-border">
           <p>أوقات الصلاة محسوبة حسب الهيئة المصرية العامة للمساحة</p>
-          <p className="mt-1">زاوية الفجر: ١٩.٥° | زاوية العشاء: ١٧.٥°</p>
+          <p className="mt-2">زاوية الفجر: ١٩.٥° | زاوية العشاء: ١٧.٥°</p>
         </footer>
       </main>
     </div>

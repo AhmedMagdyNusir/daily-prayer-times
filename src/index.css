@@ -42,7 +42,7 @@
     --prayer-upcoming: 210 30% 90%;
     --prayer-glow: 205 85% 55%;
     --sunrise-accent: 35 90% 55%;
-    
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -88,7 +88,7 @@
     --prayer-upcoming: 215 30% 22%;
     --prayer-glow: 205 85% 60%;
     --sunrise-accent: 35 85% 50%;
-    
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -111,11 +111,26 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family:
+      "Noto Sans Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6, p, span, div, button, a, label, input, textarea {
-    font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  div,
+  button,
+  a,
+  label,
+  input,
+  textarea {
+    font-family:
+      "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
@@ -142,13 +157,9 @@
     @apply bg-[hsl(var(--prayer-upcoming))] text-muted-foreground border-2 border-border;
   }
 
-  .prayer-node-sunrise {
-    @apply bg-[hsl(var(--sunrise-accent))] text-white;
-  }
-
   /* Horizontal timeline connector (desktop) */
   .timeline-connector-horizontal {
-    @apply h-1 flex-1 mx-1 rounded-full transition-all duration-300;
+    @apply h-[3.5px] flex-1 mx-3 rounded-full transition-all duration-300;
   }
 
   /* Vertical timeline connector (mobile) */
@@ -167,7 +178,8 @@
 
 @layer utilities {
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 20px hsl(var(--prayer-glow) / 0.5);
     }
     50% {
@@ -191,7 +203,8 @@
   }
 
   @keyframes bounce-soft {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {

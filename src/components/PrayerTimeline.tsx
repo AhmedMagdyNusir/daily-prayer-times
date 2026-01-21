@@ -17,11 +17,13 @@ const prayerIcons: Record<string, React.ReactNode> = {
   isha: <Moon className="w-5 h-5" />,
 };
 
-export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTimelineProps) {
+export function PrayerTimeline({
+  prayers,
+  nextPrayerIndex,
+  isNextDay,
+}: PrayerTimelineProps) {
   const getNodeStatus = (index: number) => {
-    if (isNextDay) {
-      return "past";
-    }
+    if (isNextDay) return "past";
     if (index < nextPrayerIndex) return "past";
     if (index === nextPrayerIndex) return "current";
     return "upcoming";
@@ -30,7 +32,7 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
   return (
     <div className="w-full">
       {/* Mobile: Vertical Timeline */}
-      <div className="flex flex-col gap-0 sm:hidden">
+      <div className="flex flex-col gap-4 md:hidden">
         {prayers.map((prayer, index) => (
           <div key={prayer.key} className="flex flex-col items-center">
             {/* Prayer Node */}
@@ -41,12 +43,11 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
                   getNodeStatus(index) === "past" && "prayer-node-past",
                   getNodeStatus(index) === "current" && "prayer-node-current",
                   getNodeStatus(index) === "upcoming" && "prayer-node-upcoming",
-                  prayer.key === "sunrise" && getNodeStatus(index) !== "current" && "prayer-node-sunrise"
                 )}
               >
                 {prayerIcons[prayer.key]}
               </div>
-              
+
               {/* Prayer name and time */}
               <div className="flex-1 flex justify-between items-center">
                 <p
@@ -54,7 +55,7 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
                     "text-sm font-semibold",
                     getNodeStatus(index) === "past" && "text-muted-foreground",
                     getNodeStatus(index) === "current" && "text-primary",
-                    getNodeStatus(index) === "upcoming" && "text-foreground"
+                    getNodeStatus(index) === "upcoming" && "text-foreground",
                   )}
                 >
                   {prayer.nameAr}
@@ -62,36 +63,30 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
                 <p
                   className={cn(
                     "text-sm font-medium",
-                    getNodeStatus(index) === "past" && "text-muted-foreground/70",
+                    getNodeStatus(index) === "past" &&
+                      "text-muted-foreground/70",
                     getNodeStatus(index) === "current" && "text-primary",
-                    getNodeStatus(index) === "upcoming" && "text-muted-foreground"
+                    getNodeStatus(index) === "upcoming" &&
+                      "text-muted-foreground",
                   )}
-                  dir="ltr"
                 >
                   {prayer.time12}
                 </p>
               </div>
             </div>
 
-            {/* Vertical Connector */}
-            {index < prayers.length - 1 && (
-              <div
-                className={cn(
-                  "timeline-connector-vertical mr-auto",
-                  "mr-[calc(50%-1.5rem)]",
-                  index < nextPrayerIndex || isNextDay ? "connector-past" : "connector-upcoming"
-                )}
-                style={{ marginRight: "calc(1.5rem - 2px)" }}
-              />
-            )}
+            {/* Vertical Connector removed as per request */}
           </div>
         ))}
       </div>
 
       {/* Desktop: Horizontal Timeline */}
-      <div className="hidden sm:flex items-center justify-between gap-2">
+      <div className="hidden md:flex items-start justify-between">
         {prayers.map((prayer, index) => (
-          <div key={prayer.key} className="flex items-center flex-1 last:flex-none">
+          <div
+            key={prayer.key}
+            className="flex items-start flex-1 last:flex-none"
+          >
             {/* Prayer Node */}
             <div className="prayer-timeline-node flex-shrink-0">
               <div
@@ -100,12 +95,11 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
                   getNodeStatus(index) === "past" && "prayer-node-past",
                   getNodeStatus(index) === "current" && "prayer-node-current",
                   getNodeStatus(index) === "upcoming" && "prayer-node-upcoming",
-                  prayer.key === "sunrise" && getNodeStatus(index) !== "current" && "prayer-node-sunrise"
                 )}
               >
                 {prayerIcons[prayer.key]}
               </div>
-              
+
               {/* Prayer name and time */}
               <div className="mt-2 text-center">
                 <p
@@ -113,7 +107,7 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
                     "text-sm font-semibold",
                     getNodeStatus(index) === "past" && "text-muted-foreground",
                     getNodeStatus(index) === "current" && "text-primary",
-                    getNodeStatus(index) === "upcoming" && "text-foreground"
+                    getNodeStatus(index) === "upcoming" && "text-foreground",
                   )}
                 >
                   {prayer.nameAr}
@@ -121,11 +115,12 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
                 <p
                   className={cn(
                     "text-sm mt-0.5 font-medium whitespace-nowrap",
-                    getNodeStatus(index) === "past" && "text-muted-foreground/70",
+                    getNodeStatus(index) === "past" &&
+                      "text-muted-foreground/70",
                     getNodeStatus(index) === "current" && "text-primary",
-                    getNodeStatus(index) === "upcoming" && "text-muted-foreground"
+                    getNodeStatus(index) === "upcoming" &&
+                      "text-muted-foreground",
                   )}
-                  dir="ltr"
                 >
                   {prayer.time12}
                 </p>
@@ -136,8 +131,10 @@ export function PrayerTimeline({ prayers, nextPrayerIndex, isNextDay }: PrayerTi
             {index < prayers.length - 1 && (
               <div
                 className={cn(
-                  "timeline-connector-horizontal",
-                  index < nextPrayerIndex || isNextDay ? "connector-past" : "connector-upcoming"
+                  "timeline-connector-horizontal mt-[27.5px]",
+                  index < nextPrayerIndex || isNextDay
+                    ? "connector-past"
+                    : "connector-upcoming",
                 )}
               />
             )}
