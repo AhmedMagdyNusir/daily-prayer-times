@@ -105,23 +105,17 @@
     @apply border-border;
   }
 
+  html {
+    direction: rtl;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
-  html {
-    direction: rtl;
-  }
-
-  /* Fix timeline responsiveness */
-  @media (max-width: 640px) {
-    .prayer-node-circle {
-      @apply w-10 h-10;
-    }
-    .prayer-node-circle svg {
-      @apply w-4 h-4;
-    }
+  h1, h2, h3, h4, h5, h6, p, span, div, button, a, label, input, textarea {
+    font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
@@ -131,7 +125,7 @@
   }
 
   .prayer-node-circle {
-    @apply w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300;
+    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300;
   }
 
   .prayer-node-past {
@@ -152,8 +146,14 @@
     @apply bg-[hsl(var(--sunrise-accent))] text-white;
   }
 
-  .timeline-connector {
+  /* Horizontal timeline connector (desktop) */
+  .timeline-connector-horizontal {
     @apply h-1 flex-1 mx-1 rounded-full transition-all duration-300;
+  }
+
+  /* Vertical timeline connector (mobile) */
+  .timeline-connector-vertical {
+    @apply w-1 h-6 my-1 rounded-full transition-all duration-300;
   }
 
   .connector-past {
