@@ -23,12 +23,12 @@ export function CountdownDisplay({ nextPrayer, timeRemaining, isNextDay }: Count
       
       {/* Prayer name */}
       <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
-        صلاة {nextPrayer.nameAr}
+        {nextPrayer.isPrayer ? `صلاة ${nextPrayer.nameAr}` : nextPrayer.nameAr}
       </h2>
       
       {/* Prayer time */}
       <p className="text-lg sm:text-xl text-muted-foreground mb-6" dir="ltr">
-        {nextPrayer.time}
+        {nextPrayer.time12}
       </p>
       
       {/* Countdown timer */}

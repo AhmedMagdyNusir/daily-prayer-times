@@ -10,12 +10,12 @@ interface HeaderProps {
 export function Header({ formattedDate, currentTime }: HeaderProps) {
   const { isDark, toggle } = useDarkMode();
 
-  const formattedTime = currentTime.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  });
+  const hours = currentTime.getHours();
+  const minutes = currentTime.getMinutes();
+  const seconds = currentTime.getSeconds();
+  const period = hours < 12 ? "صـ" : "مـ";
+  const hours12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+  const formattedTime = `${hours12}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")} ${period}`;
 
   return (
     <header className="w-full bg-card border-b border-border shadow-sm">
