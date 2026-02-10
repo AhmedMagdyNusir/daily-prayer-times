@@ -19,32 +19,33 @@ export function CountdownDisplay({
   const formattedRemaining = formatTimeRemainingArabic(hours, minutes, seconds);
 
   return (
-    <div className="text-center p-6 sm:p-8 bg-card rounded-2xl shadow-lg border border-border animate-fade-in-up">
+    <div className="text-center flex-1 p-6 sm:p-8 bg-card rounded-2xl shadow border border-border flex flex-col gap-2 justify-center">
       {/* Next day indicator */}
       {isNextDay && (
-        <p className="text-sm text-muted-foreground mb-2">
-          الصلاة القادمة غداً
-        </p>
+        <p className="text-sm text-muted-foreground">الصلاة القادمة غداً</p>
       )}
 
       {/* Prayer name */}
-      <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-2">
+      <h2 className="text-2xl sm:text-3xl font-bold text-primary">
         {nextPrayer.isPrayer ? `صلاة ${nextPrayer.nameAr}` : nextPrayer.nameAr}
       </h2>
 
       {/* Prayer time */}
-      <p className="text-lg sm:text-xl text-muted-foreground mb-6">
+      <p className="text-lg sm:text-xl text-muted-foreground mb-4">
         {nextPrayer.time12}
       </p>
 
       {/* Countdown timer */}
-      <div className="flex items-center justify-center gap-3 mb-4">
+      <div className="flex items-center justify-center gap-3 mb-2">
         <Clock className="w-5 h-5 text-primary" />
         <span className="text-muted-foreground">باقي</span>
       </div>
 
       {/* Time boxes */}
-      <div className="flex items-center justify-center gap-3 sm:gap-4">
+      <div
+        className="flex items-center justify-center gap-3 sm:gap-4"
+        dir="ltr"
+      >
         <TimeBox value={hours} label="ساعة" />
         <span className="text-2xl sm:text-3xl font-bold text-primary">:</span>
         <TimeBox value={minutes} label="دقيقة" />

@@ -27,8 +27,8 @@ const Index = () => {
       {/* Main content */}
       <main className="flex-1 container mx-auto px-4 py-6 sm:py-10 flex flex-col gap-8">
         {/* Timeline section */}
-        <section className="bg-card rounded-2xl p-4 sm:p-6 shadow-lg border border-border">
-          <h2 className="text-lg font-semibold text-foreground mb-6 text-center">
+        <section className="bg-card rounded-2xl p-4 sm:p-8 sm:px-10 shadow border border-border">
+          <h2 className="text-lg font-semibold text-foreground mb-8 text-center">
             أوقات الصلاة اليوم
           </h2>
           <PrayerTimeline
@@ -39,7 +39,7 @@ const Index = () => {
         </section>
 
         {/* Countdown section */}
-        <section>
+        <section className="flex-1 flex flex-col">
           <CountdownDisplay
             nextPrayer={nextPrayer}
             timeRemaining={timeRemaining}
