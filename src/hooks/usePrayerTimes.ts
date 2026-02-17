@@ -6,6 +6,7 @@ import {
   getTimeRemaining,
   isPrayerTime,
   formatArabicDate,
+  formatHijriDate,
   PrayerInfo,
 } from "@/lib/prayerUtils";
 import { DayPrayerTimes } from "@/data/prayerTimes";
@@ -20,6 +21,7 @@ export interface UsePrayerTimesReturn {
   timeRemaining: { hours: number; minutes: number; seconds: number };
   currentPrayerAlert: PrayerInfo | null;
   formattedDate: string;
+  hijriDate: string;
 }
 
 export function usePrayerTimes(): UsePrayerTimesReturn {
@@ -69,6 +71,7 @@ export function usePrayerTimes(): UsePrayerTimesReturn {
   
   // Format date
   const formattedDate = formatArabicDate(currentTime);
+  const hijriDate = formatHijriDate(currentTime);
   
   return {
     currentTime,
@@ -80,5 +83,6 @@ export function usePrayerTimes(): UsePrayerTimesReturn {
     timeRemaining,
     currentPrayerAlert,
     formattedDate,
+    hijriDate,
   };
 }
