@@ -102,7 +102,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border font-sans;
   }
 
   html {
@@ -111,26 +111,6 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family:
-      "Noto Sans Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  span,
-  div,
-  button,
-  a,
-  label,
-  input,
-  textarea {
-    font-family:
-      "Noto Naskh Arabic", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 

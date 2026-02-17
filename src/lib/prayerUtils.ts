@@ -61,7 +61,7 @@ export function getTodayPrayerTimes(date: Date = new Date()): DayPrayerTimes {
 // Convert time string (HH:MM) to Date object for today
 export function timeStringToDate(
   timeStr: string,
-  baseDate: Date = new Date()
+  baseDate: Date = new Date(),
 ): Date {
   const [hours, minutes] = timeStr.split(":").map(Number);
   const date = new Date(baseDate);
@@ -120,7 +120,7 @@ export function getPrayersArray(dayTimes: DayPrayerTimes): PrayerInfo[] {
 // Find the next prayer based on current time
 export function getNextPrayer(
   prayers: PrayerInfo[],
-  currentTime: Date = new Date()
+  currentTime: Date = new Date(),
 ): { prayer: PrayerInfo | null; index: number; isNextDay: boolean } {
   const now = currentTime;
 
@@ -139,7 +139,7 @@ export function getNextPrayer(
 export function getTimeRemaining(
   targetTime: string,
   currentTime: Date = new Date(),
-  isNextDay: boolean = false
+  isNextDay: boolean = false,
 ): { hours: number; minutes: number; seconds: number; totalSeconds: number } {
   const target = timeStringToDate(targetTime, currentTime);
 
@@ -164,7 +164,7 @@ export function getTimeRemaining(
 // Check if current time matches a prayer time (within 1 minute)
 export function isPrayerTime(
   prayers: PrayerInfo[],
-  currentTime: Date = new Date()
+  currentTime: Date = new Date(),
 ): PrayerInfo | null {
   for (const prayer of prayers) {
     if (!prayer.isPrayer) continue; // Skip sunrise
@@ -217,46 +217,88 @@ export function formatArabicDate(date: Date): string {
 // Convert Gregorian to Hijri date (Umm al-Qura approximation)
 export function formatHijriDate(date: Date): string {
   const hijriMonths = [
-    "محرم", "صفر", "ربيع الأول", "ربيع الآخر",
-    "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
-    "رمضان", "شوال", "ذو القعدة", "ذو الحجة",
+    "محرم",
+    "صفر",
+    "ربيع الأول",
+    "ربيع الآخر",
+    "جمادى الأولى",
+    "جمادى الآخرة",
+    "رجب",
+    "شعبان",
+    "رمضان",
+    "شوال",
+    "ذو القعدة",
+    "ذو الحجة",
   ];
 
-  // Kuwaiti algorithm for Gregorian to Hijri conversion
-  const d = date.getDate();
-  const m = date.getMonth();
-  const y = date.getFullYear();
+  const getHijriDate = (targetDate: Date, dayOffset: number = 0) => {
+    const d = targetDate.getDate();
+    const m = targetDate.getMonth();
+    const y = targetDate.getFullYear();
 
-  let jd =
-    Math.floor((11 * y + 3) / 30) +
-    354 * y +
-    30 * m -
-    Math.floor((m - 1) / 2) +
-    d +
-    1948440 -
-    385;
+    // Julian Day Number
+    const a = Math.floor((14 - (m + 1)) / 12);
+    const yy = y + 4800 - a;
+    const mm = m + 1 + 12 * a - 3;
+    let jd =
+      d +
+      Math.floor((153 * mm + 2) / 5) +
+      365 * yy +
+      Math.floor(yy / 4) -
+      Math.floor(yy / 100) +
+      Math.floor(yy / 400) -
+      32045;
 
-  if (m < 2 || (m === 1 && d <= 28)) {
-    // Use direct Julian Day calculation
+    // Apply offset
+    jd += dayOffset;
+
+    // Convert Julian Day to Hijri
+    const l = jd - 1948440 + 10632;
+    const n = Math.floor((l - 1) / 10631);
+    const l2 = l - 10631 * n + 354;
+    const j =
+      Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) +
+      Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+    const l3 =
+      l2 -
+      Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+      Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
+      29;
+    const hijriMonth = Math.floor((24 * l3) / 709);
+    const hijriDay = l3 - Math.floor((709 * hijriMonth) / 24);
+    const hijriYear = 30 * n + j - 30;
+
+    return { day: hijriDay, month: hijriMonth, year: hijriYear };
+  };
+
+  // Get standard calculation (no offset)
+  const standard = getHijriDate(date, 0);
+
+  // Correction logic:
+  // If standard calc says it's Ramadan (Month 9) or later, we shift back by 1 day
+  // to account for the sighting (User observed 30 Sha'ban).
+  // Additionally, if shifting back results in 29 Sha'ban, we force it to 30 Sha'ban
+  // because the algorithm treats Sha'ban as 29 days, but user implies 30.
+
+  if (standard.month >= 9) {
+    const adjusted = getHijriDate(date, -1);
+
+    // Check if we fell back to 29 Sha'ban (Month 8) from 1 Ramadan (Month 9)
+    // This detects the "missing day" in Algorithm
+    if (
+      adjusted.month === 8 &&
+      adjusted.day === 29 &&
+      standard.month === 9 &&
+      standard.day === 1
+    ) {
+      adjusted.day = 30;
+    }
+
+    return `${toArabicNumerals(adjusted.day)} ${hijriMonths[adjusted.month - 1]} ${toArabicNumerals(adjusted.year)}`;
   }
 
-  // Julian Day Number
-  const a = Math.floor((14 - (m + 1)) / 12);
-  const yy = y + 4800 - a;
-  const mm = (m + 1) + 12 * a - 3;
-  jd = d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
-
-  // Convert Julian Day to Hijri
-  const l = jd - 1948440 + 10632;
-  const n = Math.floor((l - 1) / 10631);
-  const l2 = l - 10631 * n + 354;
-  const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
-  const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
-  const hijriMonth = Math.floor((24 * l3) / 709);
-  const hijriDay = l3 - Math.floor((709 * hijriMonth) / 24);
-  const hijriYear = 30 * n + j - 30;
-
-  return `${toArabicNumerals(hijriDay)} ${hijriMonths[hijriMonth - 1]} ${toArabicNumerals(hijriYear)}`;
+  // If before Ramadan, use standard calculation
+  return `${toArabicNumerals(standard.day)} ${hijriMonths[standard.month - 1]} ${toArabicNumerals(standard.year)}`;
 }
 
 // Convert number to Arabic numerals
@@ -273,7 +315,7 @@ export function toArabicNumerals(num: number): string {
 export function formatTimeRemainingArabic(
   hours: number,
   minutes: number,
-  seconds: number
+  seconds: number,
 ): string {
   const parts: string[] = [];
 
