@@ -214,16 +214,13 @@ export function formatArabicDate(date: Date): string {
   return `${dayName}، ${dayNum} ${monthName} ${year}`;
 }
 
-// Format Hijri date using Intl API
+// Format Hijri date using Intl API (Umm al-Qura calendar)
 export function formatHijriDate(date: Date): string {
-  const options: Intl.DateTimeFormatOptions = {
-    calendar: "islamic-uma",
+  const formatter = new Intl.DateTimeFormat("ar-u-ca-islamic-umalqura", {
     day: "numeric",
     month: "long",
     year: "numeric",
-  };
-
-  const formatter = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-uma", options);
+  });
   return formatter.format(date);
 }
 
