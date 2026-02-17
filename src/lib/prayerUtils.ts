@@ -214,6 +214,19 @@ export function formatArabicDate(date: Date): string {
   return `${dayName}، ${dayNum} ${monthName} ${year}`;
 }
 
+// Format Hijri date using Intl API
+export function formatHijriDate(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    calendar: "islamic-uma",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+
+  const formatter = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-uma", options);
+  return formatter.format(date);
+}
+
 // Convert number to Arabic numerals
 export function toArabicNumerals(num: number): string {
   const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];

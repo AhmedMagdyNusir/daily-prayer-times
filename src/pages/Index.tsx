@@ -14,6 +14,7 @@ const Index = () => {
     timeRemaining,
     currentPrayerAlert,
     formattedDate,
+    hijriDate,
   } = usePrayerTimes();
 
   return (
@@ -22,7 +23,7 @@ const Index = () => {
       {currentPrayerAlert && <PrayerAlert prayer={currentPrayerAlert} />}
 
       {/* Header */}
-      <Header formattedDate={formattedDate} currentTime={currentTime} />
+      <Header formattedDate={formattedDate} hijriDate={hijriDate} currentTime={currentTime} />
 
       {/* Main content */}
       <main className="flex-1 container mx-auto px-4 py-6 sm:py-10 flex flex-col gap-8">
