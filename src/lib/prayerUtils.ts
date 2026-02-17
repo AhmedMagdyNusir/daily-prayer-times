@@ -214,14 +214,49 @@ export function formatArabicDate(date: Date): string {
   return `${dayName}، ${dayNum} ${monthName} ${year}`;
 }
 
-// Format Hijri date using Intl API (Umm al-Qura calendar)
+// Convert Gregorian to Hijri date (Umm al-Qura approximation)
 export function formatHijriDate(date: Date): string {
-  const formatter = new Intl.DateTimeFormat("ar-u-ca-islamic-umalqura", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  return formatter.format(date);
+  const hijriMonths = [
+    "محرم", "صفر", "ربيع الأول", "ربيع الآخر",
+    "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
+    "رمضان", "شوال", "ذو القعدة", "ذو الحجة",
+  ];
+
+  // Kuwaiti algorithm for Gregorian to Hijri conversion
+  const d = date.getDate();
+  const m = date.getMonth();
+  const y = date.getFullYear();
+
+  let jd =
+    Math.floor((11 * y + 3) / 30) +
+    354 * y +
+    30 * m -
+    Math.floor((m - 1) / 2) +
+    d +
+    1948440 -
+    385;
+
+  if (m < 2 || (m === 1 && d <= 28)) {
+    // Use direct Julian Day calculation
+  }
+
+  // Julian Day Number
+  const a = Math.floor((14 - (m + 1)) / 12);
+  const yy = y + 4800 - a;
+  const mm = (m + 1) + 12 * a - 3;
+  jd = d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+
+  // Convert Julian Day to Hijri
+  const l = jd - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  const l2 = l - 10631 * n + 354;
+  const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+  const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+  const hijriMonth = Math.floor((24 * l3) / 709);
+  const hijriDay = l3 - Math.floor((709 * hijriMonth) / 24);
+  const hijriYear = 30 * n + j - 30;
+
+  return `${toArabicNumerals(hijriDay)} ${hijriMonths[hijriMonth - 1]} ${toArabicNumerals(hijriYear)}`;
 }
 
 // Convert number to Arabic numerals
