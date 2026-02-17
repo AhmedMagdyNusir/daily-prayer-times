@@ -57,11 +57,13 @@ export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
           </div>
         </div>
 
+        <hr className="my-4" />
+
         {/* Date bar */}
-        <div className="flex items-center justify-center gap-3 mt-2 text-xs sm:text-sm text-muted-foreground">
-          <span>{formattedDate}</span>
-          <span className="text-border">|</span>
+        <div className="flex items-center justify-center gap-3 text-xs sm:text-sm text-muted-foreground">
           <span className="text-primary font-medium">{hijriDate}</span>
+          <span className="text-border">|</span>
+          <span>{formattedDate}</span>
         </div>
       </div>
     </header>

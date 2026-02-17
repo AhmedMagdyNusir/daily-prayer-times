@@ -54,9 +54,9 @@ export function CountdownDisplay({
       </div>
 
       {/* Text format */}
-      <p className="mt-6 text-lg text-foreground font-medium">
+      <div className="mt-6 px-6 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md text-primary font-medium w-fit mx-auto shadow-sm">
         {formattedRemaining}
-      </p>
+      </div>
     </div>
   );
 }
