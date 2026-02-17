@@ -37,17 +37,9 @@ export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
 
           {/* Current time and dark mode toggle */}
           <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end text-left">
-              <p className="text-[10px] sm:text-xs text-primary font-medium">
-                {hijriDate}
-              </p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">
-                {formattedDate}
-              </p>
-              <p className="text-lg sm:text-xl font-bold text-primary font-mono mt-0.5">
-                {formattedTime}
-              </p>
-            </div>
+            <p className="text-lg sm:text-xl font-bold text-primary font-mono">
+              {formattedTime}
+            </p>
 
             <Button
               variant="outline"
@@ -63,6 +55,13 @@ export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
               )}
             </Button>
           </div>
+        </div>
+
+        {/* Date bar */}
+        <div className="flex items-center justify-center gap-3 mt-2 text-xs sm:text-sm text-muted-foreground">
+          <span>{formattedDate}</span>
+          <span className="text-border">|</span>
+          <span className="text-primary font-medium">{hijriDate}</span>
         </div>
       </div>
     </header>
