@@ -37,7 +37,11 @@ export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
 
           {/* Current time and dark mode toggle */}
           <div className="flex items-center gap-3">
+<<<<<<< HEAD
             <div className="flex flex-col">
+=======
+            <div className="flex flex-col items-center justify-center">
+>>>>>>> af5a4e2bfa35c8ca776801d4fbd68c87aa3dac60
               <span className="text-[10px] sm:text-xs text-muted-foreground">
                 الوقت | كل ثانية تُكتب
               </span>
