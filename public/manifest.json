@@ -1,7 +1,7 @@
 {
-  "name": "مواقيت الصلاة - القاهرة",
+  "name": "مواقيت الصلاة",
   "short_name": "الصلاة",
-  "description": "تطبيق مواقيت الصلاة اليومية للقاهرة، مصر",
+  "description": "تطبيق مواقيت الصلاة اليومية فى القاهرة - مصر",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
