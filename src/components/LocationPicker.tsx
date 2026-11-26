@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, ChevronDown, LocateFixed, Loader2, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { cities } from "@/data/cities";
+import { citiesByGovernorate } from "@/data/cities";
 import { SelectedLocation } from "@/hooks/useSelectedLocation";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -14,12 +14,6 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-
-// Cities grouped by governorate, in list order
-const governorates = cities.reduce<Map<string, typeof cities>>((groups, city) => {
-  groups.set(city.governorate, [...(groups.get(city.governorate) ?? []), city]);
-  return groups;
-}, new Map());
 
 function locationErrorMessage(error: unknown): string {
   if (error instanceof GeolocationPositionError) {
@@ -93,7 +87,7 @@ export function LocationPicker({ location }: { location: SelectedLocation }) {
             </CommandGroup>
             <CommandSeparator />
 
-            {[...governorates].map(([governorate, list]) => (
+            {citiesByGovernorate.map(([governorate, list]) => (
               <CommandGroup key={governorate} heading={governorate}>
                 {list.map((c) => {
                   const selected = !isCurrentLocation && c.id === city.id;

@@ -144,3 +144,13 @@ export function findNearestCity(lat: number, lng: number): City {
   }
   return nearest;
 }
+
+// Cities grouped by governorate, in list order
+export const citiesByGovernorate: [governorate: string, cities: City[]][] = [
+  ...cities
+    .reduce((groups, city) => {
+      groups.set(city.governorate, [...(groups.get(city.governorate) ?? []), city]);
+      return groups;
+    }, new Map<string, City[]>())
+    .entries(),
+];
