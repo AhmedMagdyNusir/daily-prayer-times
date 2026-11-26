@@ -9,6 +9,7 @@ import { PrayerTimeline } from "@/components/PrayerTimeline";
 import { CountdownDisplay } from "@/components/CountdownDisplay";
 import { PrayerAlert } from "@/components/PrayerAlert";
 import { CityDirectory } from "@/components/CityDirectory";
+import { LocationPrompt } from "@/components/LocationPrompt";
 import NotFound from "@/pages/NotFound";
 
 const Index = () => {
@@ -49,6 +50,8 @@ const Index = () => {
 
       {/* Main content */}
       <main className="flex-1 container mx-auto max-w-5xl px-4 py-6 sm:py-10 flex flex-col gap-6 sm:gap-8">
+        {location.showLocationPrompt && <LocationPrompt location={location} />}
+
         {/* Re-keyed per location so switching cities plays an entrance animation */}
         <div
           key={location.isCurrentLocation ? "gps" : location.city.id}

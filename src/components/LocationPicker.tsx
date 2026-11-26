@@ -14,19 +14,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-
-function locationErrorMessage(error: unknown): string {
-  if (error instanceof GeolocationPositionError) {
-    if (error.code === error.PERMISSION_DENIED) {
-      return "لم يتم السماح بالوصول إلى الموقع. فعّل إذن الموقع من إعدادات المتصفح.";
-    }
-    if (error.code === error.TIMEOUT) return "استغرق تحديد الموقع وقتاً طويلاً، حاول مرة أخرى.";
-  }
-  if (error instanceof Error && error.message === "unsupported") {
-    return "المتصفح لا يدعم تحديد الموقع.";
-  }
-  return "تعذّر تحديد موقعك الحالي.";
-}
+import { locationErrorMessage } from "@/lib/geolocation";
 
 export function LocationPicker({ location }: { location: SelectedLocation }) {
   const [open, setOpen] = useState(false);
