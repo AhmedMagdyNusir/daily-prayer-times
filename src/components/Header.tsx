@@ -65,7 +65,7 @@ export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
             className="col-span-2 sm:col-span-1 sm:col-start-2 sm:row-start-1 flex flex-col items-center justify-center border-b sm:border-b-0 sm:border-x border-border px-8 py-3 sm:py-4"
             aria-label="الوقت الحالي"
           >
-            <p className="flex items-baseline gap-1 tabular-nums" dir="ltr">
+            <p className="flex items-baseline gap-0.5 tabular-nums" dir="ltr">
               <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
                 {hhmm}
               </span>
@@ -109,10 +109,10 @@ function DateItem({
   className?: string;
 }) {
   return (
-    <div className={cn("flex items-center gap-2.5 px-3 py-3 sm:px-5", className)}>
+    <div className={cn("flex items-center justify-center sm:justify-start gap-2.5 px-3 py-3 sm:px-5 text-center sm:text-start", className)}>
       <div
         className={cn(
-          "hidden min-[380px]:flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
+          "hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
           accent ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground",
         )}
       >
@@ -122,7 +122,7 @@ function DateItem({
         <p className="text-[11px] text-muted-foreground">{label}</p>
         <p
           className={cn(
-            "text-sm sm:text-base font-semibold leading-snug",
+            "text-[13px] sm:text-base font-semibold leading-snug whitespace-nowrap",
             accent ? "text-primary" : "text-foreground/90",
           )}
         >
