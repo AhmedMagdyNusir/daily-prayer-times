@@ -126,6 +126,36 @@
 }
 
 @layer utilities {
+  /* Slim themed scrollbar. Chromium/Safari use the pseudo-elements (setting
+     scrollbar-width/color there would disable them), Firefox the standard props. */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: 4px;
+  }
+  /* The transparent border insets the 6px thumb from the edge */
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+  }
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+  .scrollbar-thin::-webkit-scrollbar-button {
+    display: none;
+  }
+  @supports (-moz-appearance: none) {
+    .scrollbar-thin {
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    }
+  }
+
   @keyframes pulse-glow {
     0%,
     100% {

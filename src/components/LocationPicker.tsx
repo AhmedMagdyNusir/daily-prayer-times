@@ -77,7 +77,7 @@ export function LocationPicker({ location }: { location: SelectedLocation }) {
       <PopoverContent align="start" className="w-72 p-0">
         <Command>
           <CommandInput placeholder="ابحث عن مدينة أو محافظة…" />
-          <CommandList className="max-h-[320px]">
+          <CommandList className="scrollbar-thin max-h-[320px] overscroll-contain py-1">
             <CommandEmpty>لا توجد نتائج</CommandEmpty>
 
             <CommandGroup>
