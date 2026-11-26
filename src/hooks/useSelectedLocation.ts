@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { City, DEFAULT_CITY_ID, findNearestCity, getCityById } from "@/data/cities";
 import { GeoPoint } from "@/lib/prayerCalc";
 
@@ -34,7 +35,10 @@ export interface SelectedLocation {
   locateMe: () => Promise<void>;
 }
 
-export function useSelectedLocation(): SelectedLocation {
+// A city in the URL (e.g. /alexandria) takes precedence over the saved choice.
+// Picking a city navigates to its page; using GPS goes back to the home page.
+export function useSelectedLocation(urlCityId?: string): SelectedLocation {
+  const navigate = useNavigate();
   const [saved, setSaved] = useState<SavedLocation>(readSavedLocation);
   const [isLocating, setIsLocating] = useState(false);
 
@@ -48,8 +52,11 @@ export function useSelectedLocation(): SelectedLocation {
   }, []);
 
   const selectCity = useCallback(
-    (cityId: string) => save({ type: "city", cityId }),
-    [save],
+    (cityId: string) => {
+      save({ type: "city", cityId });
+      navigate(`/${cityId}`);
+    },
+    [save, navigate],
   );
 
   const locateMe = useCallback(() => {
@@ -62,6 +69,7 @@ export function useSelectedLocation(): SelectedLocation {
         ({ coords }) => {
           save({ type: "gps", lat: coords.latitude, lng: coords.longitude });
           setIsLocating(false);
+          navigate("/");
           resolve();
         },
         (error) => {
@@ -71,7 +79,19 @@ export function useSelectedLocation(): SelectedLocation {
         { enableHighAccuracy: false, timeout: 15000, maximumAge: 10 * 60 * 1000 },
       );
     });
-  }, [save]);
+  }, [save, navigate]);
+
+  const urlCity = urlCityId ? getCityById(urlCityId) : undefined;
+  if (urlCity) {
+    return {
+      point: { lat: urlCity.lat, lng: urlCity.lng },
+      city: urlCity,
+      isCurrentLocation: false,
+      isLocating,
+      selectCity,
+      locateMe,
+    };
+  }
 
   if (saved.type === "gps") {
     return {
