@@ -1,3 +1,7 @@
+// ARCHIVED: the original static Cairo table the app used before switching to
+// on-device calculation (src/lib/prayerCalc.ts). Kept for reference and used
+// by prayerCalc.test.ts to verify the calculation still matches it.
+//
 // Cairo prayer times data for 365 days
 // Coordinates: lat=30.0444, lon=31.2357
 // Calculation method: Egyptian General Authority of Survey (Fajr angle=19.5°, Isha angle=17.5°)

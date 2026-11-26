@@ -1,15 +1,18 @@
-import { Moon, Sun, MapPin, MoonStar, CalendarDays } from "lucide-react";
+import { Moon, Sun, MoonStar, CalendarDays } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { SelectedLocation } from "@/hooks/useSelectedLocation";
 import { Button } from "@/components/ui/button";
+import { LocationPicker } from "@/components/LocationPicker";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   formattedDate: string;
   hijriDate: string;
   currentTime: Date;
+  location: SelectedLocation;
 }
 
-export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
+export function Header({ formattedDate, hijriDate, currentTime, location }: HeaderProps) {
   const { isDark, toggle } = useDarkMode();
 
   const hours = currentTime.getHours();
@@ -41,10 +44,7 @@ export function Header({ formattedDate, hijriDate, currentTime }: HeaderProps) {
               <h1 className="text-xl sm:text-2xl font-bold leading-tight text-foreground">
                 مواقيت الصلاة
               </h1>
-              <div className="mt-0.5 flex items-center gap-1 text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="text-xs sm:text-sm">القاهرة، مصر</span>
-              </div>
+              <LocationPicker location={location} />
             </div>
           </div>
 

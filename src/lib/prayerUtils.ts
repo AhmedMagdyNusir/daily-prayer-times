@@ -1,4 +1,4 @@
-import { prayerTimesData, DayPrayerTimes } from "@/data/prayerTimes";
+import { calculatePrayerTimes, DayPrayerTimes, GeoPoint } from "@/lib/prayerCalc";
 import { isDstActive, shiftTime } from "@/lib/dst";
 
 export type PrayerName =
@@ -34,30 +34,10 @@ export function to12HourFormat(time24: string): string {
   return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
 }
 
-// Get day of year (1-365)
-export function getDayOfYear(date: Date): number {
-  const start = new Date(date.getFullYear(), 0, 0);
-  const diff = date.getTime() - start.getTime();
-  const oneDay = 1000 * 60 * 60 * 24;
-  let dayOfYear = Math.floor(diff / oneDay);
-
-  // Handle leap year - if after Feb 28 in leap year, subtract 1
-  const isLeapYear =
-    (date.getFullYear() % 4 === 0 && date.getFullYear() % 100 !== 0) ||
-    date.getFullYear() % 400 === 0;
-  if (isLeapYear && dayOfYear > 59) {
-    dayOfYear -= 1;
-  }
-
-  // Clamp to valid range
-  return Math.max(1, Math.min(365, dayOfYear));
-}
-
-// Get prayer times for a specific day, shifted by an hour during summer time
-// (the table is calculated for a fixed UTC+2)
-export function getTodayPrayerTimes(date: Date = new Date()): DayPrayerTimes {
-  const doy = getDayOfYear(date);
-  const times = prayerTimesData[doy - 1]; // Array is 0-indexed
+// Get prayer times for a day at a location, shifted by an hour during summer
+// time (calculated times are in Egypt standard time, UTC+2)
+export function getTodayPrayerTimes(date: Date, point: GeoPoint): DayPrayerTimes {
+  const times = calculatePrayerTimes(date, point);
   if (!isDstActive(date)) return times;
 
   return {

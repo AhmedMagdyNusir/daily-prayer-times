@@ -9,7 +9,7 @@ import {
   timeStringToDate,
   PrayerInfo,
 } from "@/lib/prayerUtils";
-import { DayPrayerTimes } from "@/data/prayerTimes";
+import { DayPrayerTimes, GeoPoint } from "@/lib/prayerCalc";
 import { isDstActive } from "@/lib/dst";
 import { getHijriLookupDate } from "@/lib/hijri";
 import { useHijriDate } from "@/hooks/useHijriDate";
@@ -31,7 +31,7 @@ export interface UsePrayerTimesReturn {
   isSummerTime: boolean;
 }
 
-export function usePrayerTimes(): UsePrayerTimesReturn {
+export function usePrayerTimes(point: GeoPoint): UsePrayerTimesReturn {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update time every second
@@ -40,7 +40,7 @@ export function usePrayerTimes(): UsePrayerTimesReturn {
     return () => clearInterval(interval);
   }, []);
 
-  const todayPrayers = getTodayPrayerTimes(currentTime);
+  const todayPrayers = getTodayPrayerTimes(currentTime, point);
   const prayersArray = getPrayersArray(todayPrayers);
 
   // Find next prayer
@@ -52,7 +52,7 @@ export function usePrayerTimes(): UsePrayerTimesReturn {
   // If all of today's prayers have passed, the next one is tomorrow's Fajr
   const tomorrow = new Date(currentTime.getTime() + ONE_DAY);
   const actualNextPrayer = isNextDay
-    ? getPrayersArray(getTodayPrayerTimes(tomorrow))[0]
+    ? getPrayersArray(getTodayPrayerTimes(tomorrow, point))[0]
     : nextPrayer;
 
   const timeRemaining = actualNextPrayer
@@ -66,7 +66,7 @@ export function usePrayerTimes(): UsePrayerTimesReturn {
       ? timeStringToDate(prayersArray[nextPrayerIndex - 1].time, currentTime)
       : isNextDay
         ? timeStringToDate(prayersArray[prayersArray.length - 1].time, currentTime)
-        : timeStringToDate(getTodayPrayerTimes(yesterday).isha, yesterday);
+        : timeStringToDate(getTodayPrayerTimes(yesterday, point).isha, yesterday);
   const nextAt = currentTime.getTime() + timeRemaining.totalSeconds * 1000;
   const span = nextAt - previousAt.getTime();
   const progress =
