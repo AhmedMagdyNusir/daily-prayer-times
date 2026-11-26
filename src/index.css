@@ -114,6 +114,17 @@
   }
 }
 
+@layer components {
+  /* Eight-pointed star tiling, tinted with the primary color */
+  .islamic-pattern {
+    background-color: hsl(var(--primary));
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1.2'%3E%3Crect x='16' y='16' width='24' height='24'/%3E%3Crect x='16' y='16' width='24' height='24' transform='rotate(45 28 28)'/%3E%3Ccircle cx='28' cy='28' r='5'/%3E%3C/g%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1.2'%3E%3Crect x='16' y='16' width='24' height='24'/%3E%3Crect x='16' y='16' width='24' height='24' transform='rotate(45 28 28)'/%3E%3Ccircle cx='28' cy='28' r='5'/%3E%3C/g%3E%3C/svg%3E");
+    -webkit-mask-size: 56px 56px;
+    mask-size: 56px 56px;
+  }
+}
+
 @layer utilities {
   @keyframes pulse-glow {
     0%,
