@@ -121,13 +121,14 @@ export function renderHeadTags(page: PageSeo): string {
     <script type="application/ld+json">${jsonLd}</script>`;
 }
 
-// Static content inside #root, readable without JavaScript. React replaces
-// it on load.
+// Static content inside #root for crawlers. React replaces it on load; until
+// then it is visually hidden by the inline .seo-fallback rule in index.html
+// (shown again when JavaScript is off) so it doesn't flash unstyled.
 export function renderFallbackContent(page: PageSeo): string {
   const links = cities
     .map((c) => `<li><a href="${cityPath(c)}">مواقيت الصلاة في ${escapeHtml(c.name)}</a></li>`)
     .join("");
-  return `<main>
+  return `<main class="seo-fallback">
       <h1>${escapeHtml(page.heading)}</h1>
       <p>${escapeHtml(page.description)}</p>
       <h2>مواقيت الصلاة في مدن مصر</h2>

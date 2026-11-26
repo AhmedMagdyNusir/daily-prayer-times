@@ -4,6 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- seo:head -->
+
+    <!-- Runs before first paint: apply the saved theme and page background so
+         the page doesn't flash white, and hide the crawler-only fallback
+         content until the app replaces it. Mirrors useDarkMode. -->
+    <script>
+      try {
+        var theme = localStorage.getItem("theme");
+        if (theme ? theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {}
+    </script>
+    <style>
+      html { background: hsl(210 50% 98%); }
+      html.dark { background: hsl(215 45% 8%); }
+      .seo-fallback {
+        position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+        overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+      }
+    </style>
+    <noscript>
+      <style>
+        .seo-fallback {
+          position: static; width: auto; height: auto; margin: 0 auto; padding: 1.5rem;
+          max-width: 48rem; overflow: visible; clip: auto; white-space: normal;
+          font-family: sans-serif; line-height: 1.8;
+        }
+      </style>
+    </noscript>
     <meta name="robots" content="index, follow, max-image-preview:large" />
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
