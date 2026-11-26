@@ -114,48 +114,6 @@
   }
 }
 
-@layer components {
-  .prayer-timeline-node {
-    @apply relative flex flex-col items-center;
-  }
-
-  .prayer-node-circle {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300;
-  }
-
-  .prayer-node-past {
-    @apply bg-[hsl(var(--prayer-past))] text-muted-foreground;
-  }
-
-  .prayer-node-current {
-    @apply bg-[hsl(var(--prayer-current))] text-primary-foreground shadow-lg;
-    box-shadow: 0 0 20px hsl(var(--prayer-glow) / 0.5);
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .prayer-node-upcoming {
-    @apply bg-[hsl(var(--prayer-upcoming))] text-muted-foreground border-2 border-border;
-  }
-
-  /* Horizontal timeline connector (desktop) */
-  .timeline-connector-horizontal {
-    @apply h-[3.5px] flex-1 mx-3 rounded-full transition-all duration-300;
-  }
-
-  /* Vertical timeline connector (mobile) */
-  .timeline-connector-vertical {
-    @apply w-1 h-6 my-1 rounded-full transition-all duration-300;
-  }
-
-  .connector-past {
-    @apply bg-[hsl(var(--prayer-past))];
-  }
-
-  .connector-upcoming {
-    @apply bg-[hsl(var(--prayer-upcoming))];
-  }
-}
-
 @layer utilities {
   @keyframes pulse-glow {
     0%,

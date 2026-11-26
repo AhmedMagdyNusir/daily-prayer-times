@@ -1,4 +1,5 @@
 import { prayerTimesData, DayPrayerTimes } from "@/data/prayerTimes";
+import { isDstActive, shiftTime } from "@/lib/dst";
 
 export type PrayerName =
   | "fajr"
@@ -52,10 +53,22 @@ export function getDayOfYear(date: Date): number {
   return Math.max(1, Math.min(365, dayOfYear));
 }
 
-// Get prayer times for a specific day
+// Get prayer times for a specific day, shifted by an hour during summer time
+// (the table is calculated for a fixed UTC+2)
 export function getTodayPrayerTimes(date: Date = new Date()): DayPrayerTimes {
   const doy = getDayOfYear(date);
-  return prayerTimesData[doy - 1]; // Array is 0-indexed
+  const times = prayerTimesData[doy - 1]; // Array is 0-indexed
+  if (!isDstActive(date)) return times;
+
+  return {
+    ...times,
+    fajr: shiftTime(times.fajr, 60),
+    sunrise: shiftTime(times.sunrise, 60),
+    dhuhr: shiftTime(times.dhuhr, 60),
+    asr: shiftTime(times.asr, 60),
+    maghrib: shiftTime(times.maghrib, 60),
+    isha: shiftTime(times.isha, 60),
+  };
 }
 
 // Convert time string (HH:MM) to Date object for today
@@ -212,93 +225,6 @@ export function formatArabicDate(date: Date): string {
   const year = date.getFullYear();
 
   return `${dayName}، ${dayNum} ${monthName} ${year}`;
-}
-
-// Convert Gregorian to Hijri date (Umm al-Qura approximation)
-export function formatHijriDate(date: Date): string {
-  const hijriMonths = [
-    "محرم",
-    "صفر",
-    "ربيع الأول",
-    "ربيع الآخر",
-    "جمادى الأولى",
-    "جمادى الآخرة",
-    "رجب",
-    "شعبان",
-    "رمضان",
-    "شوال",
-    "ذو القعدة",
-    "ذو الحجة",
-  ];
-
-  const getHijriDate = (targetDate: Date, dayOffset: number = 0) => {
-    const d = targetDate.getDate();
-    const m = targetDate.getMonth();
-    const y = targetDate.getFullYear();
-
-    // Julian Day Number
-    const a = Math.floor((14 - (m + 1)) / 12);
-    const yy = y + 4800 - a;
-    const mm = m + 1 + 12 * a - 3;
-    let jd =
-      d +
-      Math.floor((153 * mm + 2) / 5) +
-      365 * yy +
-      Math.floor(yy / 4) -
-      Math.floor(yy / 100) +
-      Math.floor(yy / 400) -
-      32045;
-
-    // Apply offset
-    jd += dayOffset;
-
-    // Convert Julian Day to Hijri
-    const l = jd - 1948440 + 10632;
-    const n = Math.floor((l - 1) / 10631);
-    const l2 = l - 10631 * n + 354;
-    const j =
-      Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) +
-      Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
-    const l3 =
-      l2 -
-      Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
-      Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
-      29;
-    const hijriMonth = Math.floor((24 * l3) / 709);
-    const hijriDay = l3 - Math.floor((709 * hijriMonth) / 24);
-    const hijriYear = 30 * n + j - 30;
-
-    return { day: hijriDay, month: hijriMonth, year: hijriYear };
-  };
-
-  // Get standard calculation (no offset)
-  const standard = getHijriDate(date, 0);
-
-  // Correction logic:
-  // If standard calc says it's Ramadan (Month 9) or later, we shift back by 1 day
-  // to account for the sighting (User observed 30 Sha'ban).
-  // Additionally, if shifting back results in 29 Sha'ban, we force it to 30 Sha'ban
-  // because the algorithm treats Sha'ban as 29 days, but user implies 30.
-
-  if (standard.month >= 9) {
-    const adjusted = getHijriDate(date, -1);
-
-    // Check if we fell back to 29 Sha'ban (Month 8) from 1 Ramadan (Month 9)
-    // This detects the "missing day" in Algorithm
-    if (
-      adjusted.month === 8 &&
-      adjusted.day === 29 &&
-      standard.month === 9 &&
-      standard.day === 1
-    ) {
-      adjusted.day = 30;
-    }
-
-    return `${toArabicNumerals(adjusted.day)} ${hijriMonths[adjusted.month - 1]} ${toArabicNumerals(adjusted.year)}`;
-  }
-
-  // If before Ramadan, use standard calculation
-  return `${toArabicNumerals(standard.day)} ${hijriMonths[standard.month - 1]} ${toArabicNumerals(standard.year)}`;
 }
 
 // Convert number to Arabic numerals

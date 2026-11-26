@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   getTodayPrayerTimes,
   getPrayersArray,
@@ -6,10 +6,15 @@ import {
   getTimeRemaining,
   isPrayerTime,
   formatArabicDate,
-  formatHijriDate,
+  timeStringToDate,
   PrayerInfo,
 } from "@/lib/prayerUtils";
 import { DayPrayerTimes } from "@/data/prayerTimes";
+import { isDstActive } from "@/lib/dst";
+import { getHijriLookupDate } from "@/lib/hijri";
+import { useHijriDate } from "@/hooks/useHijriDate";
+
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export interface UsePrayerTimesReturn {
   currentTime: Date;
@@ -19,60 +24,60 @@ export interface UsePrayerTimesReturn {
   nextPrayerIndex: number;
   isNextDay: boolean;
   timeRemaining: { hours: number; minutes: number; seconds: number };
+  progress: number; // 0-1, elapsed share of the time between previous and next prayer
   currentPrayerAlert: PrayerInfo | null;
   formattedDate: string;
   hijriDate: string;
+  isSummerTime: boolean;
 }
 
 export function usePrayerTimes(): UsePrayerTimesReturn {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [currentDay, setCurrentDay] = useState(new Date().toDateString());
-  
+
   // Update time every second
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setCurrentTime(now);
-      
-      // Check if day has changed
-      const newDay = now.toDateString();
-      if (newDay !== currentDay) {
-        setCurrentDay(newDay);
-      }
-    }, 1000);
-    
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(interval);
-  }, [currentDay]);
-  
-  // Get today's prayer times (recalculates when day changes)
+  }, []);
+
   const todayPrayers = getTodayPrayerTimes(currentTime);
   const prayersArray = getPrayersArray(todayPrayers);
-  
+
   // Find next prayer
   const { prayer: nextPrayer, index: nextPrayerIndex, isNextDay } = getNextPrayer(
     prayersArray,
     currentTime
   );
-  
-  // If next day, get tomorrow's Fajr
-  const tomorrowPrayers = isNextDay
-    ? getPrayersArray(getTodayPrayerTimes(new Date(currentTime.getTime() + 24 * 60 * 60 * 1000)))
-    : null;
-  
-  const actualNextPrayer = isNextDay && tomorrowPrayers ? tomorrowPrayers[0] : nextPrayer;
-  
-  // Calculate time remaining
+
+  // If all of today's prayers have passed, the next one is tomorrow's Fajr
+  const tomorrow = new Date(currentTime.getTime() + ONE_DAY);
+  const actualNextPrayer = isNextDay
+    ? getPrayersArray(getTodayPrayerTimes(tomorrow))[0]
+    : nextPrayer;
+
   const timeRemaining = actualNextPrayer
     ? getTimeRemaining(actualNextPrayer.time, currentTime, isNextDay)
     : { hours: 0, minutes: 0, seconds: 0, totalSeconds: 0 };
-  
-  // Check for prayer time alert
+
+  // Previous prayer: earlier today, or yesterday's Isha before Fajr
+  const yesterday = new Date(currentTime.getTime() - ONE_DAY);
+  const previousAt =
+    nextPrayerIndex > 0
+      ? timeStringToDate(prayersArray[nextPrayerIndex - 1].time, currentTime)
+      : isNextDay
+        ? timeStringToDate(prayersArray[prayersArray.length - 1].time, currentTime)
+        : timeStringToDate(getTodayPrayerTimes(yesterday).isha, yesterday);
+  const nextAt = currentTime.getTime() + timeRemaining.totalSeconds * 1000;
+  const span = nextAt - previousAt.getTime();
+  const progress =
+    span > 0 ? Math.min(1, Math.max(0, (currentTime.getTime() - previousAt.getTime()) / span)) : 0;
+
   const currentPrayerAlert = isPrayerTime(prayersArray, currentTime);
-  
-  // Format date
-  const formattedDate = formatArabicDate(currentTime);
-  const hijriDate = formatHijriDate(currentTime);
-  
+
+  // The Hijri day begins at Maghrib
+  const isAfterMaghrib = currentTime >= timeStringToDate(todayPrayers.maghrib, currentTime);
+  const hijriDate = useHijriDate(getHijriLookupDate(currentTime, isAfterMaghrib));
+
   return {
     currentTime,
     todayPrayers,
@@ -81,8 +86,10 @@ export function usePrayerTimes(): UsePrayerTimesReturn {
     nextPrayerIndex: isNextDay ? 0 : nextPrayerIndex,
     isNextDay,
     timeRemaining,
+    progress,
     currentPrayerAlert,
-    formattedDate,
+    formattedDate: formatArabicDate(currentTime),
     hijriDate,
+    isSummerTime: isDstActive(currentTime),
   };
 }
