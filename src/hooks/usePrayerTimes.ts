@@ -12,6 +12,7 @@ import {
 import { DayPrayerTimes, GeoPoint } from "@/lib/prayerCalc";
 import { isDstActive } from "@/lib/dst";
 import { getHijriLookupDate } from "@/lib/hijri";
+import { getOccasion, Occasion, readOccasionOverride } from "@/lib/occasions";
 import { useHijriDate } from "@/hooks/useHijriDate";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -28,6 +29,7 @@ export interface UsePrayerTimesReturn {
   currentPrayerAlert: PrayerInfo | null;
   formattedDate: string;
   hijriDate: string;
+  occasion: Occasion | null; // festive season shown in the header
   isSummerTime: boolean;
 }
 
@@ -76,7 +78,11 @@ export function usePrayerTimes(point: GeoPoint): UsePrayerTimesReturn {
 
   // The Hijri day begins at Maghrib
   const isAfterMaghrib = currentTime >= timeStringToDate(todayPrayers.maghrib, currentTime);
-  const hijriDate = useHijriDate(getHijriLookupDate(currentTime, isAfterMaghrib));
+  const { hijri, formatted: hijriDate } = useHijriDate(
+    getHijriLookupDate(currentTime, isAfterMaghrib),
+  );
+  const override = readOccasionOverride();
+  const occasion = override !== undefined ? override : getOccasion(hijri);
 
   return {
     currentTime,
@@ -90,6 +96,7 @@ export function usePrayerTimes(point: GeoPoint): UsePrayerTimesReturn {
     currentPrayerAlert,
     formattedDate: formatArabicDate(currentTime),
     hijriDate,
+    occasion,
     isSummerTime: isDstActive(currentTime),
   };
 }

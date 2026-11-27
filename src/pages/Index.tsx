@@ -27,6 +27,7 @@ const Index = () => {
     currentPrayerAlert,
     formattedDate,
     hijriDate,
+    occasion,
     isSummerTime,
   } = usePrayerTimes(location.point);
 
@@ -44,6 +45,7 @@ const Index = () => {
       <Header
         formattedDate={formattedDate}
         hijriDate={hijriDate}
+        occasion={occasion}
         currentTime={currentTime}
         location={location}
       />

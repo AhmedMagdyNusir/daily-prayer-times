@@ -3,16 +3,19 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 import { SelectedLocation } from "@/hooks/useSelectedLocation";
 import { Button } from "@/components/ui/button";
 import { LocationPicker } from "@/components/LocationPicker";
+import { FestiveOrnament } from "@/components/FestiveOrnament";
+import { Occasion, occasionGreetings } from "@/lib/occasions";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   formattedDate: string;
   hijriDate: string;
+  occasion: Occasion | null;
   currentTime: Date;
   location: SelectedLocation;
 }
 
-export function Header({ formattedDate, hijriDate, currentTime, location }: HeaderProps) {
+export function Header({ formattedDate, hijriDate, occasion, currentTime, location }: HeaderProps) {
   const { isDark, toggle } = useDarkMode();
 
   const hours = currentTime.getHours();
@@ -37,13 +40,21 @@ export function Header({ formattedDate, hijriDate, currentTime, location }: Head
         {/* Brand and theme toggle */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-card shadow-sm ring-1 ring-border">
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-card shadow-sm ring-1 ring-border">
               <img src="/icon-192.png" alt="" className="h-8 w-8" />
+              {occasion && <FestiveOrnament occasion={occasion} />}
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold leading-tight text-foreground">
-                مواقيت الصلاة
-              </h1>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <h1 className="text-xl sm:text-2xl font-bold leading-tight text-foreground">
+                  مواقيت الصلاة
+                </h1>
+                {occasion && (
+                  <span className="rounded-full bg-festive/15 px-2 py-0.5 text-[11px] sm:text-xs font-semibold text-festive-foreground ring-1 ring-festive/30">
+                    {occasionGreetings[occasion]}
+                  </span>
+                )}
+              </div>
               <LocationPicker location={location} />
             </div>
           </div>

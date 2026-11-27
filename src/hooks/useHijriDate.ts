@@ -2,15 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import {
   computeHijriDateLocally,
   fetchHijriDate,
+  HijriDate,
   hijriMonths,
   readCachedHijriDate,
   toApiDateKey,
 } from "@/lib/hijri";
 import { toArabicNumerals } from "@/lib/prayerUtils";
 
-// Formatted Hijri date for a Gregorian day: fetched from the API and cached,
-// with the local Umm al-Qura calculation shown until (or if never) it arrives.
-export function useHijriDate(lookupDate: Date): string {
+// Hijri date for a Gregorian day, with its formatted text: fetched from the API
+// and cached, with the local Umm al-Qura calculation used until (or if never) it arrives.
+export function useHijriDate(lookupDate: Date): { hijri: HijriDate; formatted: string } {
   const key = toApiDateKey(lookupDate);
 
   const { data } = useQuery({
@@ -22,5 +23,6 @@ export function useHijriDate(lookupDate: Date): string {
   });
 
   const hijri = data ?? computeHijriDateLocally(lookupDate);
-  return `${toArabicNumerals(hijri.day)} ${hijriMonths[hijri.month - 1]} ${toArabicNumerals(hijri.year)} هـ`;
+  const formatted = `${toArabicNumerals(hijri.day)} ${hijriMonths[hijri.month - 1]} ${toArabicNumerals(hijri.year)} هـ`;
+  return { hijri, formatted };
 }

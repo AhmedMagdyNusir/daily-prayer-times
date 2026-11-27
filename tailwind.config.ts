@@ -69,6 +69,10 @@ export default {
           glow: "hsl(var(--prayer-glow))",
         },
         sunrise: "hsl(var(--sunrise-accent))",
+        festive: {
+          DEFAULT: "hsl(var(--festive))",
+          foreground: "hsl(var(--festive-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -91,11 +95,16 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--prayer-glow) / 0.5)" },
           "50%": { boxShadow: "0 0 35px hsl(var(--prayer-glow) / 0.7)" },
         },
+        swing: {
+          "0%, 100%": { transform: "rotate(-6deg)" },
+          "50%": { transform: "rotate(6deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        swing: "swing 3.5s ease-in-out infinite",
       },
     },
   },
