@@ -62,8 +62,10 @@ export function timeStringToDate(
   return date;
 }
 
-// Get all prayers for a day as an array
-export function getPrayersArray(dayTimes: DayPrayerTimes): PrayerInfo[] {
+// Get all prayers for a day as an array (Dhuhr is named Jumuah on Fridays)
+export function getPrayersArray(dayTimes: DayPrayerTimes, date: Date): PrayerInfo[] {
+  const isFriday = date.getDay() === 5;
+
   return [
     {
       key: "fajr",
@@ -81,7 +83,7 @@ export function getPrayersArray(dayTimes: DayPrayerTimes): PrayerInfo[] {
     },
     {
       key: "dhuhr",
-      nameAr: prayerNames.dhuhr,
+      nameAr: isFriday ? "الجمعة" : prayerNames.dhuhr,
       time: dayTimes.dhuhr,
       time12: to12HourFormat(dayTimes.dhuhr),
       isPrayer: true,

@@ -34,7 +34,11 @@ export function CountdownDisplay({
 
       <div className="relative flex flex-col items-center text-center gap-2">
         <p className="text-sm text-white/75">
-          {isNextDay ? "الصلاة القادمة غداً" : "الصلاة القادمة"}
+          {isNextDay
+            ? "الصلاة القادمة غداً"
+            : nextPrayer.isPrayer
+              ? "الصلاة القادمة"
+              : "الموعد القادم"}
         </p>
 
         <h2 className="text-3xl sm:text-4xl font-bold">

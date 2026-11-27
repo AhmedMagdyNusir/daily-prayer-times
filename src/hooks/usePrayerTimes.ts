@@ -41,7 +41,7 @@ export function usePrayerTimes(point: GeoPoint): UsePrayerTimesReturn {
   }, []);
 
   const todayPrayers = getTodayPrayerTimes(currentTime, point);
-  const prayersArray = getPrayersArray(todayPrayers);
+  const prayersArray = getPrayersArray(todayPrayers, currentTime);
 
   // Find next prayer
   const { prayer: nextPrayer, index: nextPrayerIndex, isNextDay } = getNextPrayer(
@@ -52,7 +52,7 @@ export function usePrayerTimes(point: GeoPoint): UsePrayerTimesReturn {
   // If all of today's prayers have passed, the next one is tomorrow's Fajr
   const tomorrow = new Date(currentTime.getTime() + ONE_DAY);
   const actualNextPrayer = isNextDay
-    ? getPrayersArray(getTodayPrayerTimes(tomorrow, point))[0]
+    ? getPrayersArray(getTodayPrayerTimes(tomorrow, point), tomorrow)[0]
     : nextPrayer;
 
   const timeRemaining = actualNextPrayer
